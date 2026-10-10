@@ -39,6 +39,8 @@ class TelemetryTUI:
             refresh_per_second=4,
             screen=True,
             auto_refresh=True,
+            redirect_stdout=True,
+            redirect_stderr=True,
         )
         self._live.start()
 
@@ -74,7 +76,7 @@ class TelemetryTUI:
         title = Text()
         title.append(" 🏎️  COMPRESSION PROXY ", style="bold italic yellow")
         title.append(" // ", style="dim white")
-        title.append("F1 TELEMETRY PIT WALL", style="bold cyan")
+        title.append("LIVE TELEMETRY DASHBOARD", style="bold cyan")
 
         subtext = Text()
         subtext.append(f"SESSION: {timer_str} ", style="bold white")
@@ -83,6 +85,7 @@ class TelemetryTUI:
         subtext.append("🟢 LIVE TELEMETRY ", style="bold green")
 
         header_table = Table.grid(expand=True)
+
         header_table.add_column(justify="left")
         header_table.add_column(justify="right")
         header_table.add_row(title, subtext)
