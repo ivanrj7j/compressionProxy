@@ -1,6 +1,7 @@
 from mitmproxy.http import HTTPFlow
 
 from .codeCompress import CodeCompressor
+from .context import Context
 from .exceptions import JobException
 from .imageCompress import ImageCompressor
 from .job import ConstantJob
@@ -14,6 +15,7 @@ class Conductor:
             CodeCompressor(),
             ImageCompressor()
         ]
+        self.context = Context(self.logger)
 
     def run(self, flow:HTTPFlow):
         self.logger.run(flow)
@@ -21,7 +23,7 @@ class Conductor:
         for job in self.constantJobs:
             jobName = type(job).__name__
             try:
-                status = job.run(flow)
+                status = job.run(flow, self.context)
                 if status:
                     self.logger.logger.info(f"{jobName} | {status}")
             except JobException as e:

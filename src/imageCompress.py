@@ -3,6 +3,7 @@ from io import BytesIO
 from mitmproxy.http import HTTPFlow, Response
 from PIL import Image
 
+from .context import Context
 from .exceptions import JobException
 
 
@@ -23,7 +24,7 @@ class ImageCompressor:
 
             return compressed
 
-    def run(self, flow:HTTPFlow):
+    def run(self, flow:HTTPFlow, context:Context):
         response = flow.response
 
         if response is None or response.status_code != 200 or response.raw_content is None:
@@ -52,6 +53,7 @@ class ImageCompressor:
                 flow.response.headers.pop(header, None)
 
             flow.response.headers.pop("Accept-Ranges", None)
+            context.updateCompression(sizeBefore, sizeAfter)
 
             return f"{sizeBefore} -> {sizeAfter} ({round((1 - sizeAfter/sizeBefore) * 100)}%)"
 

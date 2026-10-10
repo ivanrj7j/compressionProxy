@@ -6,6 +6,7 @@ import rcssmin
 import rjsmin
 from mitmproxy.http import HTTPFlow
 
+from .context import Context
 from .exceptions import JobException
 from .job import ConstantJob
 
@@ -35,7 +36,7 @@ class CodeCompressor(ConstantJob):
             ensure_ascii=False
         )
 
-    def run(self, flow:HTTPFlow):
+    def run(self, flow:HTTPFlow, context:Context):
         if flow is None or flow.response is None:
             return
 
@@ -66,6 +67,7 @@ class CodeCompressor(ConstantJob):
                 compressed = compressionMethod(content)
                 flow.response.text = compressed
                 sizeAfter = len(compressed) if compressed else sizeBefore
+                context.updateCompression(sizeBefore, sizeAfter)
                 return f"{sizeBefore} -> {sizeAfter} ({round((1 - sizeAfter/sizeBefore) * 100)}%)"
         except Exception as exc:
             raise JobException(f"Could not decode response for {contentType}: {exc}") from exc
