@@ -2,6 +2,7 @@ from mitmproxy.http import HTTPFlow
 
 from .codeCompress import CodeCompressor
 from .exceptions import JobException
+from .imageCompress import ImageCompressor
 from .job import ConstantJob
 from .logger import Logger
 
@@ -10,7 +11,8 @@ class Conductor:
     def __init__(self):
         self.logger = Logger()
         self.constantJobs:list[ConstantJob] = [
-            CodeCompressor()
+            CodeCompressor(),
+            ImageCompressor()
         ]
 
     def run(self, flow:HTTPFlow):
