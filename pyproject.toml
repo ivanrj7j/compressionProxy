@@ -5,7 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "minify-html>=0.18.1",
     "mitmproxy>=12.2.3",
+    "rcssmin>=1.2.2",
+    "rjsmin>=1.2.5",
 ]
 
 [dependency-groups]
