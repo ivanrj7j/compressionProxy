@@ -15,5 +15,5 @@ class Adblock:
     def run(self, flow:HTTPFlow, context:Context):
         if flow.request.pretty_host.strip().lower() in self.servers:
             flow.response = Response.make(204, b"")
-            context.updateAdBlockCount()
+            context.updateAdBlockCount(url=flow.request.pretty_url)
     

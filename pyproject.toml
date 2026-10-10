@@ -9,6 +9,7 @@ dependencies = [
     "mitmproxy>=12.2.3",
     "pillow>=12.3.0",
     "rcssmin>=1.2.2",
+    "rich>=15.0.0",
     "rjsmin>=1.2.5",
 ]
 

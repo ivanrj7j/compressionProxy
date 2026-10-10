@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from mitmproxy.http import HTTPFlow, Response
+from mitmproxy.http import HTTPFlow
 from PIL import Image
 
 from .context import Context
@@ -53,7 +53,7 @@ class ImageCompressor:
                 flow.response.headers.pop(header, None)
 
             flow.response.headers.pop("Accept-Ranges", None)
-            context.updateCompression(sizeBefore, sizeAfter)
+            context.updateCompression(sizeBefore, sizeAfter, url=flow.request.pretty_url, content_type=contentType)
 
             return f"{sizeBefore} -> {sizeAfter} ({round((1 - sizeAfter/sizeBefore) * 100)}%)"
 

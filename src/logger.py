@@ -30,5 +30,4 @@ class Logger(ConstantJob):
             "content-type", ""
         )
         bodySize = len(flow.response.raw_content or b"")
-        print(f"{flow.request.pretty_url} | {contentType} | {bodySize} bytes")
-        self.logger.info(f"{flow.request.pretty_url} | {contentType} | {bodySize} bytes")
+        self.logger.info(f"{flow.request.pretty_url} | {contentType} | {bodySize} bytes")

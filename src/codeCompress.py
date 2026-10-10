@@ -67,7 +67,8 @@ class CodeCompressor(ConstantJob):
                 compressed = compressionMethod(content)
                 flow.response.text = compressed
                 sizeAfter = len(compressed) if compressed else sizeBefore
-                context.updateCompression(sizeBefore, sizeAfter)
+                context.updateCompression(sizeBefore, sizeAfter, url=flow.request.pretty_url, content_type=contentType)
                 return f"{sizeBefore} -> {sizeAfter} ({round((1 - sizeAfter/sizeBefore) * 100)}%)"
+
         except Exception as exc:
             raise JobException(f"Could not decode response for {contentType}: {exc}") from exc
