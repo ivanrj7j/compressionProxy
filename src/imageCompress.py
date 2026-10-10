@@ -16,7 +16,7 @@ class ImageCompressor:
                 return
 
             output = BytesIO()
-            image.save(output, format="WEBP", quality=70)
+            image.save(output, format="WEBP", quality=50)
             compressed = output.getvalue()
 
             if len(compressed) >= len(content):
