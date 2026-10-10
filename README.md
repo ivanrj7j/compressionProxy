@@ -1,74 +1,219 @@
 # Semantic Compression Proxy
 
-This project is a lightweight HTTP proxy designed to reduce the amount of data transmitted over the network by compressing incoming payloads before they are forwarded. The tradeoff is intentional: lower bandwidth usage comes at the cost of higher latency because the proxy spends extra time analyzing and compressing the data.
+A lightweight HTTP/HTTPS proxy that reduces network data usage by optimizing responses before they reach the client. The project explores the trade-off between bandwidth savings, processing overhead, and latency.
 
-## Project idea
+## Project Overview
 
-The core concept is simple: a proxy sits in the middle of client-server communication and tries to shrink payloads that are expensive to send. This is particularly useful for environments with limited bandwidth, slow mobile connections, or scenarios where transfer size matters more than raw response time.
+The Semantic Compression Proxy intercepts network traffic and aims to reduce the size of transmitted content through content-aware optimization.
 
-In this project, the compression is inspired by compiler design. Instead of treating the payload as plain text, the proxy can analyze the structure of source-like content and exploit semantic redundancy. The goal is to compress code by understanding patterns such as:
+Inspired by compiler design, the project explores how understanding the structure of content can enable more efficient representations.
 
-- repeated identifiers and declarations
-- redundant whitespace and formatting
-- common syntactic structures
-- code that can be represented more compactly without changing meaning
-- language-aware transformations that preserve semantics while reducing size
+Potential optimization targets include:
 
-This makes it a micro-project for exploring the intersection of networking, data compression, and compiler analysis.
+- HTML, CSS, and JavaScript minification
+- Redundant whitespace and formatting
+- Image optimization
+- Repeated or unnecessary content
+- Language-aware transformations that preserve semantics
 
-## Why this fits a compiler design project
+## Experimental Results
 
-A compiler already performs semantic and syntactic analysis to understand meaning before generating optimized output. This project applies a similar idea to data transmission:
+Our experiment demonstrated that the proxy can reduce internet data usage by **up to 27%**.
 
-- parse incoming content as structured code or code-like text
-- identify redundant or derivable information
-- encode it using a smaller, semantically equivalent representation
-- decode it on the receiving side when needed
+| Metric | Result |
+|---|---|
+| Maximum observed data reduction | 27% |
+| Equivalent data saved per 100 GB transferred | Up to 27 GB |
+| Bandwidth utilization reduction | Up to 27% |
 
-This is not a general-purpose compression engine; it is a focused demonstration of how semantic analysis can be used to compress code more intelligently than standard byte-level compression alone.
+The 27% figure represents the maximum observed reduction, not a guaranteed improvement for every website or user. Actual savings depend on the content processed and the optimizations applied.
 
-## Proxy behavior
+## Estimated Annual Data and Cost Savings
 
-The current implementation uses `mitmproxy` to intercept HTTP traffic and log request metadata, response size, and content type. This gives the project a solid foundation for adding compression logic later.
+To estimate the potential real-world impact, we use India's reported average mobile data consumption of approximately **31 GB per month per user in 2025**, as reported by Nokia's Mobile Broadband Index.
 
-The proxy can be extended to:
+Source: [The Economic Times — India's average monthly mobile data usage per user hits 31 GB in 2025](https://economictimes.indiatimes.com/industry/telecom/indias-average-monthly-mobile-data-usage-per-user-hits-31-gb-in-2025/articleshow/129921729.cms)
 
-- inspect request or response bodies
-- detect code-heavy payloads
-- apply semantic-aware compression
-- measure compression ratio and latency impact
-- compare naive compression with semantic compression
+This corresponds to an estimated annual average of:
 
-## Tradeoff: lower data usage vs. more latency
+**31 GB × 12 = 372 GB per year**
 
-This project intentionally favors data efficiency over speed.
+### Percentile estimates
 
-- Benefits: less network traffic, better use of limited bandwidth, lower cost in mobile or constrained environments
-- Cost: extra processing time, higher end-to-end latency, more CPU usage in the proxy
+Publicly reported average usage does not provide the individual-user percentile distribution required for this analysis. Therefore, the following estimates use a log-normal distribution calibrated to a mean of 31 GB/month, with a log-space standard deviation of 0.8.
 
-This mirrors a real-world design decision in networking and compiler optimization: sometimes a more expensive transformation is worth it if it saves enough bandwidth.
+These are illustrative statistical estimates, not observed population percentiles.
 
-## Getting started
+Assumptions:
+- Average monthly usage: 31 GB
+- Annual usage: monthly usage × 12
+- Maximum proxy reduction: 27%
+- Data cost: ₹8 per GB saved
+- Savings assume the same usage pattern and reduction rate throughout the year.
 
-Install dependencies with `uv` and run the proxy:
+| User percentile | Estimated annual usage | Data saved/year (27%) | Estimated cost saved/year |
+|---|---:|---:|---:|
+| 25th percentile | 157.5 GB | 42.5 GB | ₹340 |
+| 50th percentile (median) | 270.1 GB | 72.9 GB | ₹583 |
+| 75th percentile | 463.4 GB | 125.1 GB | ₹1,001 |
+| 90th percentile | 753.1 GB | 203.3 GB | ₹1,627 |
+| 99th percentile | 1,737.1 GB | 469.0 GB | ₹3,752 |
+
+### Calculation methodology
+
+For each percentile:
+
+- **Annual usage** = estimated monthly usage × 12
+- **Annual data saved** = annual usage × 0.27
+- **Annual cost saved** = annual data saved × ₹8
+
+For example, a median user consuming approximately 270.1 GB annually would save:
+
+- Data: 270.1 × 0.27 ≈ 72.9 GB/year
+- Cost: 72.9 × ₹8 ≈ ₹583/year
+
+**Important:** These figures represent potential savings at the maximum observed reduction. Actual financial savings depend on the user's tariff. For fixed-price plans with unlimited data or prepaid data allowances, reducing usage may not directly reduce the bill.
+
+## Why This Fits a Compiler Design Project
+
+Compilers analyze source code before transforming it into a more efficient representation. This project applies a similar principle to network content:
+
+1. Inspect incoming responses.
+2. Identify redundant or compressible content.
+3. Apply suitable content transformations.
+4. Measure the resulting reduction in transmitted data.
+5. Evaluate the trade-off between bandwidth and latency.
+
+Unlike conventional compression that operates primarily on bytes, semantic optimization exploits knowledge of content structure where applicable.
+
+## Proxy Behavior
+
+The implementation uses `mitmproxy` to intercept HTTP/HTTPS traffic and inspect responses.
+
+The proxy can be extended to support:
+
+- Request and response inspection
+- Content-type detection
+- Response-body optimization
+- Compression ratio measurement
+- Bandwidth and latency benchmarking
+- Comparison with standard compression algorithms
+
+## Trade-offs
+
+The proxy prioritizes data efficiency over minimum latency.
+
+**Benefits**
+- Reduced network traffic
+- Potential savings on metered data connections
+- More efficient use of limited bandwidth
+- Lower transfer requirements for supported content
+
+**Costs**
+- Additional processing time
+- Potentially higher end-to-end latency
+- CPU and memory overhead
+- HTTPS interception setup and certificate requirements
+
+## Installation Guide — Semantic Compression Proxy
+
+Repository: [ivanrj7j/compressionProxy](https://github.com/ivanrj7j/compressionProxy). The project uses `uv` and `mitmproxy`.&#x20;
+
+
+
+
+### Step 1: Install prerequisites
+
+Install:
+
+- Git: [Download Git](https://git-scm.com/downloads)
+- Python: [Download Python](https://www.python.org/downloads/)
+- uv: [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
+
+Verify the installations in CMD or PowerShell:
+
+```
+git --version
+python --version
+uv --version
+```
+
+### Step 2: Clone the repository
+
+```
+git clone https://github.com/ivanrj7j/compressionProxy.git
+cd compressionProxy
+```
+
+### Step 3: Install dependencies
+
+Run:
+
+```
+uv sync
+```
+
+This creates the project environment and installs the dependencies defined in `pyproject.toml` and `uv.lock`.
+
+### Step 4: Start the proxy
+
+Run the following command from the repository directory:
+
+```
+uv run mitmdump -s main.py
+```
+
+The `-s main.py` argument loads the project's proxy addon.
+
+Keep this terminal open while using the proxy.
+
+### Step 5: Configure your browser
+
+1. Open your browser's network or proxy settings.
+2. Configure the HTTP proxy as `127.0.0.1` and port `8080`.
+3. Open `http://mitm.it` in the browser.
+4. Follow the instructions to install the mitmproxy certificate for HTTPS inspection.&#x20;
+
+   [image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
+
+   GitHub
+
+
+
+### Step 6: Test the proxy
+
+Visit a few websites through the configured browser and check the terminal output for intercepted traffic and response statistics.
+
+Compare the transferred data with and without the proxy to evaluate the reduction.
+
+### Step 7: Stop the proxy
+
+Press `Ctrl+C` in the terminal.
+
+Security note: HTTPS interception allows the proxy to inspect encrypted traffic. Use it only on devices and connections you are authorized to inspect, and remove the trusted certificate when it is no longer needed.
+
+## Getting Started
+
+Install the dependencies using `uv` and start the proxy:
 
 ```bash
 uv run mitmdump -s main.py
 ```
 
-This starts a local MITM proxy that captures HTTP traffic and logs the size of each response for analysis.
+This starts the `mitmproxy` addon, which can intercept traffic and collect response statistics. Configure the client to use the proxy and install its certificate when HTTPS inspection is required.
 
-## Future extensions
+## Future Work
 
-Possible next steps for the project include:
-
-- semantic compression for source-code payloads
-- lightweight syntax-aware tokenization
-- JSON or XML payload optimization
-- latency and bandwidth benchmarking
-- comparison against standard gzip or brotli strategies
-- a decoder on the client side to restore the original data
+- Expand semantic optimization for HTML, CSS, and JavaScript.
+- Add image optimization and content-type-specific strategies.
+- Benchmark against gzip and Brotli.
+- Measure latency and CPU overhead.
+- Test across different websites and usage patterns.
+- Collect a larger experimental dataset to report average and percentile savings with confidence intervals.
+- Validate annual savings using real-world user traffic distributions.
 
 ## Summary
 
-This is a micro compiler-design project that treats a proxy as a place where semantic analysis can be applied to reduce payload size. The result is a system that saves network data at the expense of additional latency, making it a useful exploration of optimization tradeoffs in both compiler theory and network design.
+The Semantic Compression Proxy explores how content-aware optimization can reduce network traffic. Our experiment observed data-usage reductions of up to 27%, suggesting potential bandwidth and cost benefits.
+
+The annual savings estimates illustrate the possible impact at different usage levels, but rely on a modeled percentile distribution and the maximum observed reduction. Further testing is required to establish representative real-world savings.
